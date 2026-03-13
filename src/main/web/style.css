@@ -1,0 +1,942 @@
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb;
+  --panel: #ffffff;
+  --text: #0b0b0b;
+  --text-secondary: #52514e;
+  --border: #dddcd6;
+  --land: #f1f0ec;
+  --state-line: #d3d2cb;
+  --dot: #a09f98;
+  --idle: #c9c8c1;
+  --blue: #2a78d6;
+  --blue-light: #86b6ef;
+  --blue-soft: #cde2fb;
+  --blue-dark: #104281;
+  --orange: #eb6834;
+  --orange-soft: #fde9df;
+  --code-keyword: #4a3aa7;
+  --code-type: #104281;
+  --code-string: #006e00;
+  --code-number: #a8480f;
+  --code-comment: #6b6a66;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 20px 16px 32px;
+  background: var(--surface);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+header,
+main,
+.explanation {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 24px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+nav {
+  display: flex;
+  gap: 16px;
+}
+
+nav a {
+  padding-bottom: 2px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+nav a:hover {
+  color: var(--text);
+}
+
+nav a[aria-current="page"] {
+  color: var(--text);
+  font-weight: 600;
+  border-bottom-color: var(--text);
+}
+
+main.planner {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+/* Forms */
+
+form {
+  display: grid;
+  gap: 8px;
+}
+
+form.inline {
+  grid-template-columns: minmax(0, 340px) 96px;
+  gap: 16px;
+}
+
+/* A dropdown that opens to folders */
+
+.dropdown {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown::after {
+  content: "▾";
+  float: right;
+  color: var(--text-secondary);
+}
+
+.menu {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.16);
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.menu summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.menu summary::before {
+  content: "▸";
+  width: 1.2em;
+  color: var(--text-secondary);
+}
+
+.menu details[open] > summary::before {
+  content: "▾";
+}
+
+.menu summary:hover,
+.menu li button:hover {
+  background: var(--blue-soft);
+}
+
+.menu summary .count {
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.menu ul {
+  margin: 0 0 4px;
+  padding: 0 0 0 1.2em;
+  list-style: none;
+}
+
+.menu li button {
+  width: 100%;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu .code {
+  font-weight: 600;
+}
+
+.field {
+  position: relative;
+}
+
+label,
+.label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+.swap {
+  justify-self: end;
+  margin: -4px 0 -12px;
+  width: 32px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.swap:disabled,
+.example:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.example {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.example:hover {
+  color: var(--text);
+}
+
+.options {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin: 4px 0 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.16);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.options li {
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.options li[aria-selected="true"] {
+  background: var(--blue-soft);
+}
+
+.options .code {
+  font-weight: 600;
+}
+
+.options .name {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.mode {
+  display: flex;
+  gap: 16px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.mode legend {
+  padding: 0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.mode label {
+  font-weight: 400;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Result */
+
+.result {
+  margin-top: 20px;
+}
+
+.result p {
+  margin: 0;
+  font-size: 17px;
+}
+
+.result ol {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+
+.result .leg {
+  font-weight: 600;
+}
+
+/* Maps */
+
+.map-panel,
+.chart-panel {
+  position: relative;
+}
+
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.map .land {
+  fill: var(--land);
+  stroke: var(--state-line);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map .airport,
+.map .dot {
+  fill: var(--dot);
+  fill-opacity: 0.75;
+}
+
+.map .airport {
+  cursor: pointer;
+}
+
+.map .airport:hover {
+  fill: var(--blue);
+  fill-opacity: 1;
+}
+
+.map .settled {
+  fill: var(--blue);
+  fill-opacity: 0.9;
+}
+
+.map .frontier {
+  fill: var(--orange);
+  fill-opacity: 1;
+}
+
+.map .tree,
+.map .relax,
+.map .route-line {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map .tree {
+  stroke: var(--blue-light);
+  stroke-width: 1;
+  stroke-opacity: 0.55;
+}
+
+.map .relax {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+.map .route-line {
+  stroke: var(--blue);
+  stroke-width: 2.5;
+}
+
+.map .stop,
+.map .mark {
+  fill: var(--blue);
+  stroke: var(--panel);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.map .stop {
+  cursor: pointer;
+}
+
+.map .mark.current {
+  fill: var(--text);
+}
+
+.map .mark.neighbor {
+  fill: var(--panel);
+  stroke: var(--text);
+}
+
+.map text {
+  fill: var(--text);
+  font-weight: 600;
+  stroke: var(--panel);
+  stroke-linejoin: round;
+  paint-order: stroke;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 5;
+  max-width: 260px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.16);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.tooltip .muted {
+  display: block;
+  color: var(--text-secondary);
+}
+
+/* Busiest-flights chart */
+
+.chart-panel {
+  margin-top: 16px;
+}
+
+.chart {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart li {
+  display: grid;
+  grid-template-columns: minmax(120px, 220px) minmax(0, 1fr) 64px;
+  align-items: center;
+  gap: 12px;
+  padding: 1px 0;
+}
+
+.chart .place {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart .track {
+  display: block;
+}
+
+.chart .bar {
+  display: block;
+  height: 18px;
+  border-radius: 0 4px 4px 0;
+}
+
+.chart .count {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.short {
+  background: var(--blue-light);
+}
+
+.medium {
+  background: var(--blue);
+}
+
+.long {
+  background: var(--blue-dark);
+}
+
+/* Explanation */
+
+.explanation {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.explanation > h2 {
+  margin-bottom: 16px;
+}
+
+.card {
+  margin-bottom: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 17px;
+}
+
+.card h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.aside {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.card .note {
+  margin: -8px 0 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.below {
+  margin: 16px 0;
+}
+
+.step {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--panel);
+  font-size: 14px;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.structures {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Code, with a bar on the running line */
+
+.code,
+.csv {
+  position: relative;
+  max-height: 520px;
+  overflow: auto;
+  padding: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font: 12px/1.6 ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+  white-space: pre;
+}
+
+.code > div,
+.csv > span {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  padding: 0 12px 0 8px;
+  border-left: 4px solid transparent;
+}
+
+.code .num {
+  display: inline-block;
+  width: 3ch;
+  margin-right: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+  user-select: none;
+}
+
+.code > .running,
+.csv > .running {
+  border-left-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.code .keyword {
+  color: var(--code-keyword);
+  font-weight: 600;
+}
+
+.code .type {
+  color: var(--code-type);
+}
+
+.code .string {
+  color: var(--code-string);
+}
+
+.code .number {
+  color: var(--code-number);
+}
+
+.code .comment {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.variables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+  margin-top: 12px;
+  font: 12px/1.6 ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+}
+
+.variable {
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.variable .name {
+  color: var(--text-secondary);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.key.dot {
+  background: var(--dot);
+}
+
+.key.settled,
+.key.match {
+  background: var(--blue);
+}
+
+.key.frontier {
+  background: var(--orange);
+}
+
+.key.untouched {
+  background: var(--idle);
+}
+
+.key.seen {
+  border: 2px solid var(--text);
+}
+
+.key.c0,
+.key.c1,
+.key.c2,
+.key.c3,
+.key.short,
+.key.medium,
+.key.long {
+  border-radius: 2px;
+}
+
+/* AVL tree */
+
+.sort-drawing {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The tree is drawn at its natural size and scrolls sideways when a search
+   reaches more nodes than fit. */
+.tree-scroller {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.tree-drawing {
+  display: block;
+  margin: 8px auto;
+}
+
+.tree-drawing text {
+  fill: var(--text-secondary);
+  font-size: 10.5px;
+  text-anchor: middle;
+}
+
+.tree-drawing text.seen,
+.tree-drawing text.match {
+  fill: var(--text);
+  font-weight: 600;
+}
+
+.tree-drawing text.sub {
+  font-size: 9px;
+}
+
+.tree-drawing line {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.tree-drawing line.seen,
+.tree-drawing line.match {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+.tree-drawing circle {
+  fill: var(--idle);
+}
+
+.tree-drawing circle.seen {
+  fill: var(--panel);
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+.tree-drawing circle.match {
+  fill: var(--blue);
+}
+
+.tree-drawing circle.current {
+  stroke: var(--orange);
+  stroke-width: 3.5;
+}
+
+/* Merge sort */
+
+.sort-drawing .bar {
+  fill: var(--idle);
+}
+
+.sort-drawing .bar.active {
+  fill: var(--blue);
+}
+
+/* Priority queue and hash table */
+
+.queue-drawing {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.queue-drawing line {
+  stroke: var(--idle);
+  stroke-width: 1.5;
+}
+
+.queue-drawing circle {
+  fill: var(--orange-soft);
+  stroke: var(--orange);
+  stroke-width: 1.5;
+}
+
+.queue-drawing circle.root {
+  stroke-width: 3.5;
+}
+
+.queue-drawing text {
+  text-anchor: middle;
+}
+
+.queue-drawing .code-label {
+  fill: var(--text);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.queue-drawing .priority {
+  fill: var(--text-secondary);
+  font-size: 8.5px;
+}
+
+.table-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-height: 12px;
+}
+
+.table-cells span {
+  width: 6px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.c0 {
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.c1 {
+  background: var(--blue-light);
+}
+
+.c2 {
+  background: var(--blue);
+}
+
+.c3 {
+  background: var(--blue-dark);
+}
+
+/* Replay controls */
+
+.player {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.player button {
+  flex: none;
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.player button:disabled,
+.player input:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.player input[type="range"] {
+  flex: 1 1 120px;
+  min-width: 80px;
+  accent-color: var(--blue);
+}
+
+.player .readout {
+  flex: none;
+  min-width: 110px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+@media (max-width: 800px) {
+  main.planner,
+  .split,
+  .structures {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .chart li {
+    grid-template-columns: 96px minmax(0, 1fr) 56px;
+    gap: 8px;
+  }
+}

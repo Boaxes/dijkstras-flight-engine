@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'org.teavm' version '0.16.0'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // The course's reference heap (heap, hash table, array list), used with permission.
+    implementation files('libs/heap.jar')
+    implementation teavm.libs.jso
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+teavm {
+    all {
+        mainClass = 'router.web.WebMain'
+    }
+    wasmGC {
+        targetFileName = 'flight-engine.wasm'
+    }
+}
+
+// Collapse a raw DB1B coupon file to one row per airport pair and pick out those airports' names.
+//   gradlew buildData -Pdb1b=path/to/DB1BCoupon.csv -Pairports=data/raw/ourairports/airports.csv
+tasks.register('buildData', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'router.tools.BuildData'
+    args = [
+        providers.gradleProperty('db1b').getOrElse(''),
+        providers.gradleProperty('airports').getOrElse('data/raw/ourairports/airports.csv'),
+        'src/main/web/data',
+    ]
+}
+
+// The static site: the page, its data files and the compiled WebAssembly module.
+tasks.register('site', Sync) {
+    dependsOn tasks.named('buildWasmGC')
+    from 'src/main/web'
+    from layout.buildDirectory.dir('generated/teavm/wasm-gc')
+    // The pages show the code that is running, read from the real source files.
+    from('src/main/java') {
+        include 'graph/ShortestPaths.java', 'graph/DB1BParser.java', 'avl/AVL.java', 'sort/Sorts.java'
+        into 'source'
+    }
+    into layout.buildDirectory.dir('site')
+}

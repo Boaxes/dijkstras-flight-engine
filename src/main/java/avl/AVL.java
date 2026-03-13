@@ -245,6 +245,51 @@ public class AVL {
     }
   }
 
+  /** Added for the flight engine: return up to limit words that start with
+   *  prefix, in sorted order. An empty prefix returns the words in order. */
+  public java.util.List<String> withPrefix(String prefix, int limit) {
+    return withPrefix(prefix, limit, null);
+  }
+
+  /** Added for the flight engine: as above, and if visited is not null, add to
+   *  it every node the search looks at, in the order it looks at them. A
+   *  node that matches is added a second time, at the moment its word joins
+   *  the result. */
+  public java.util.List<String> withPrefix(String prefix, int limit, java.util.List<Node> visited) {
+    java.util.List<String> found = new java.util.ArrayList<String>();
+    withPrefix(root, prefix, limit, found, visited);
+    return found;
+  }
+
+  /* collect the words in the tree rooted at n that start with prefix.
+   * Words that start with prefix sit together in sorted order, so a subtree
+   * that lies wholly before or after them is skipped. */
+  private void withPrefix(Node n, String prefix, int limit, java.util.List<String> found,
+      java.util.List<Node> visited) {
+    if (n == null || found.size() >= limit) {
+      return;
+    }
+    if (visited != null) {
+      visited.add(n);
+    }
+    if (n.word.startsWith(prefix)) {
+      withPrefix(n.left, prefix, limit, found, visited);
+      if (found.size() < limit) {
+        found.add(n.word);
+        if (visited != null) {
+          visited.add(n);
+        }
+      }
+      withPrefix(n.right, prefix, limit, found, visited);
+    }
+    else if (n.word.compareTo(prefix) < 0) { // n and its left subtree come before every match
+      withPrefix(n.right, prefix, limit, found, visited);
+    }
+    else { // n and its right subtree come after every match
+      withPrefix(n.left, prefix, limit, found, visited);
+    }
+  }
+
   /** remove the word w from the tree */
   public void remove(String w) {
     remove(root, w);

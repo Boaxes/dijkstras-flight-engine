@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dijkstra's Flight Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Dijkstra's Flight Engine</h1>
+    <nav aria-label="Pages">
+      <a href="index.html" aria-current="page">Routes</a>
+      <a href="busiest.html">Busiest flights</a>
+    </nav>
+  </header>
+
+  <main class="planner">
+    <section aria-label="Route search">
+      <form autocomplete="off">
+        <div class="field">
+          <label for="from">From</label>
+          <input id="from" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false"
+                 aria-controls="from-options" placeholder="Code, city or airport name" disabled>
+          <ul id="from-options" class="options" role="listbox" hidden></ul>
+        </div>
+        <button id="swap" type="button" class="swap" title="Swap From and To" aria-label="Swap From and To" disabled>&#8645;</button>
+        <div class="field">
+          <label for="to">To</label>
+          <input id="to" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false"
+                 aria-controls="to-options" placeholder="Code, city or airport name" disabled>
+          <ul id="to-options" class="options" role="listbox" hidden></ul>
+        </div>
+        <fieldset class="mode">
+          <legend>Prefer</legend>
+          <label><input type="radio" name="mode" value="miles" checked> Fewest miles</label>
+          <label><input type="radio" name="mode" value="flights"> Fewest flights</label>
+        </fieldset>
+        <button id="example" type="button" class="example" disabled>Load an example</button>
+      </form>
+      <div id="result" class="result" aria-live="polite"></div>
+    </section>
+
+    <section class="map-panel" aria-label="Map">
+      <svg id="map" class="map" role="img" aria-label="Map of airports and the chosen route"></svg>
+      <div id="tooltip" class="tooltip" hidden></div>
+    </section>
+  </main>
+
+  <section class="explanation" aria-labelledby="explanation-title">
+    <h2 id="explanation-title">Explanation</h2>
+
+    <article class="card" id="card-graph">
+      <h3><span class="step">1</span> Building the graph</h3>
+      <div class="split">
+        <div>
+          <div id="graph-csv" class="csv"></div>
+          <div id="graph-variables" class="variables"></div>
+        </div>
+        <div id="graph-code"></div>
+      </div>
+      <div id="graph-controls"></div>
+    </article>
+
+    <article class="card" id="card-tree">
+      <h3><span class="step">2</span> Finding an airport: AVL tree</h3>
+      <div id="tree-scroller" class="tree-scroller">
+        <svg id="tree-drawing" class="tree-drawing" role="img" aria-label="The search tree, with the nodes the search reached"></svg>
+      </div>
+      <ul class="legend">
+        <li><span class="key untouched"></span>Not visited</li>
+        <li><span class="key seen"></span>Visited</li>
+        <li><span class="key match"></span>Match</li>
+      </ul>
+      <div id="tree-variables" class="variables"></div>
+      <div id="tree-code" class="below"></div>
+      <div id="tree-controls"></div>
+    </article>
+
+    <article class="card" id="card-search">
+      <h3><span class="step">3</span> Finding the route: Dijkstra's algorithm</h3>
+      <div class="split">
+        <div>
+          <svg id="search-map" class="map" role="img" aria-label="Airports the search has settled so far"></svg>
+          <ul class="legend">
+            <li><span class="key dot"></span>Unexplored</li>
+            <li><span class="key frontier"></span>Frontier</li>
+            <li><span class="key settled"></span>Settled</li>
+          </ul>
+          <div class="structures">
+            <div>
+              <h4>Priority queue <span id="queue-size" class="aside"></span></h4>
+              <svg id="queue-drawing" class="queue-drawing" viewBox="0 0 360 220" role="img" aria-label="The front of the priority queue, as a binary heap"></svg>
+            </div>
+            <div>
+              <h4>Hash table</h4>
+              <div id="table-cells" class="table-cells"></div>
+              <ul class="legend">
+                <li><span class="key c0"></span>0</li>
+                <li><span class="key c1"></span>1</li>
+                <li><span class="key c2"></span>2</li>
+                <li><span class="key c3"></span>3+ per bucket</li>
+              </ul>
+            </div>
+          </div>
+          <div id="search-variables" class="variables"></div>
+        </div>
+        <div>
+          <div id="search-code-miles"></div>
+          <div id="search-code-flights" hidden></div>
+          <div id="search-code-path" hidden></div>
+        </div>
+      </div>
+      <div id="search-controls"></div>
+    </article>
+  </section>
+
+  <script src="flight-engine.wasm-runtime.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

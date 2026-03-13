@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Busiest flights · Dijkstra's Flight Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Dijkstra's Flight Engine</h1>
+    <nav aria-label="Pages">
+      <a href="index.html">Routes</a>
+      <a href="busiest.html" aria-current="page">Busiest flights</a>
+    </nav>
+  </header>
+
+  <main>
+    <form class="inline" autocomplete="off">
+      <div class="field">
+        <span class="label" id="airport-label">Airport</span>
+        <button id="airport" type="button" class="dropdown" aria-haspopup="true" aria-expanded="false"
+                aria-labelledby="airport-label airport" disabled>Choose an airport</button>
+        <div id="airport-menu" class="menu" hidden></div>
+      </div>
+      <div class="field">
+        <label for="show">Show</label>
+        <select id="show">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="result" aria-live="polite">
+      <p id="sentence"></p>
+    </div>
+
+    <section class="chart-panel" aria-label="Busiest flights">
+      <ul class="legend" id="chart-legend" hidden>
+        <li><span class="key short"></span>Under 500 mi</li>
+        <li><span class="key medium"></span>500 to 1,499 mi</li>
+        <li><span class="key long"></span>1,500 mi or more</li>
+      </ul>
+      <ol id="chart" class="chart"></ol>
+      <div id="tooltip" class="tooltip" hidden></div>
+    </section>
+  </main>
+
+  <section class="explanation" aria-labelledby="explanation-title">
+    <h2 id="explanation-title">Explanation</h2>
+
+    <article class="card" id="card-sort">
+      <h3>Merge Sort</h3>
+      <p class="note">Sorting every flight to show only the busiest few is for demonstration; a min-heap holding
+         just the top N would find them without ordering the rest.</p>
+      <div class="split">
+        <div>
+          <svg id="sort-drawing" class="sort-drawing" role="img" aria-label="The flights being sorted by tickets, as bars"></svg>
+          <div id="sort-variables" class="variables"></div>
+        </div>
+        <div id="sort-code"></div>
+      </div>
+      <div id="sort-controls"></div>
+    </article>
+  </section>
+
+  <script src="flight-engine.wasm-runtime.js"></script>
+  <script type="module" src="busiest.js"></script>
+</body>
+</html>

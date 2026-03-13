@@ -1,0 +1,5 @@
+.gradle/
+build/
+
+# Raw downloads. See the README for where each comes from.
+data/raw/
